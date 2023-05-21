@@ -50,7 +50,35 @@ public class Game : MonoBehaviour
 
     private void Tick()
     {
-        MoveSnake();
+        int row = snake.Head.Row;
+        int col = snake.Head.Col;
+        Cell cell;
+        CellStatus cellStatus;
+
+        switch (moveDirection)
+        {
+            case Direction.UP:
+                col++;
+                break;
+            case Direction.LEFT:
+                row--;
+                break;
+            case Direction.DOWN:
+                col--;
+                break;
+            case Direction.RIGHT:
+                row++;
+                break;
+        }
+        cell = board.GetCell(row, col);
+        cellStatus = cell.Status;
+        snake.Move(cell);
+        if(cellStatus == CellStatus.Food)
+        {
+            food.SetActive(false);
+            snake.Expand();
+            //StartCoroutine(SpawnFood());
+        }
     }
     private IEnumerator SpawnFood()
     {
@@ -71,28 +99,5 @@ public class Game : MonoBehaviour
         cell.Status = CellStatus.Food;
         food.transform.position = cell.Pos;
         food.SetActive(true);
-    }
-
-    private void MoveSnake()
-    {
-        int row = snake.Head.Row;
-        int col = snake.Head.Col;
-
-        switch (moveDirection)
-        {
-            case Direction.UP:
-                col++;
-                break;
-            case Direction.LEFT:
-                row--;
-                break;
-            case Direction.DOWN:
-                col--;
-                break;
-            case Direction.RIGHT:
-                row++;
-                break;
-        }
-        snake.Move(board.GetCell(row, col));
     }
 }

@@ -30,10 +30,10 @@ public class Snake : MonoBehaviour
     public void Init(Cell cell)
     {
         SetHead(cell);
-        Expand(head);
+        Expand();
     }
 
-    public void Expand(Cell cell)
+    public void Expand()
     {
         GameObject headObj = Instantiate(partPrefab, transform);
         headObj.transform.position = head.Pos;
