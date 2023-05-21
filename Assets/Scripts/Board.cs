@@ -19,4 +19,9 @@ public class Board
             }
         }
     }
+
+    public Cell GetCell(int row, int col)
+    {
+        return cells[row, col];
+    }
 }
