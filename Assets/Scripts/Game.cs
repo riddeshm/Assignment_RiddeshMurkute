@@ -71,15 +71,26 @@ public class Game : MonoBehaviour
                 row++;
                 break;
         }
+        if(row > ROWS || row < 0 || col > COLS || col < 0)
+        {
+            Debug.Log("GameOver");
+            return;
+        }
         cell = board.GetCell(row, col);
         cellStatus = cell.Status;
-        snake.Move(cell);
+        
         if(cellStatus == CellStatus.Food)
         {
             food.SetActive(false);
             snake.Expand();
             StartCoroutine(SpawnFood());
         }
+        else if(cellStatus == CellStatus.Snake)
+        {
+            Debug.Log("GameOver");
+            return;
+        }
+        snake.Move(cell);
     }
 
     private void CheckInput()
