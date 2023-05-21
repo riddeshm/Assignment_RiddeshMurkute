@@ -37,6 +37,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckInput();
         if (Time.time >= nextTime)
         {
 
@@ -77,9 +78,30 @@ public class Game : MonoBehaviour
         {
             food.SetActive(false);
             snake.Expand();
-            //StartCoroutine(SpawnFood());
+            StartCoroutine(SpawnFood());
         }
     }
+
+    private void CheckInput()
+    {
+        if (Input.GetAxis("Horizontal") > 0 && moveDirection != Direction.LEFT)
+        {
+            moveDirection = Direction.RIGHT;
+        }
+        else if (Input.GetAxis("Horizontal") < 0 && moveDirection != Direction.RIGHT)
+        {
+            moveDirection = Direction.LEFT;
+        }
+        else if (Input.GetAxis("Vertical") > 0 && moveDirection != Direction.DOWN)
+        {
+            moveDirection = Direction.UP;
+        }
+        else if (Input.GetAxis("Vertical") < 0 && moveDirection != Direction.UP)
+        {
+            moveDirection = Direction.DOWN;
+        }
+    }
+
     private IEnumerator SpawnFood()
     {
         int _row = 0;
