@@ -376,6 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snake: {fileID: 646871972}
+  foodPrefab: {fileID: 4454160282648215465, guid: fa21008edf4f3cc48ad7ae2a27651e24, type: 3}
 --- !u!4 &1048722647
 Transform:
   m_ObjectHideFlags: 0

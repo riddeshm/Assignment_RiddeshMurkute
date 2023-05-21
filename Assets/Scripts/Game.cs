@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public enum Direction
@@ -12,16 +14,24 @@ public enum Direction
 
 public class Game : MonoBehaviour
 {
+    private const int ROWS = 10, COLS = 10;
     [SerializeField] Snake snake;
+    [SerializeField] GameObject foodPrefab;
     Board board;
     Direction moveDirection = Direction.RIGHT;
     float interval = 0.5f;
     float nextTime = 0;
+    CancellationTokenSource cts = new();
+
+    GameObject food;
     // Start is called before the first frame update
     void Start()
     {
-        board = new Board(10, 10);
+        board = new Board(ROWS, COLS);
         snake.Init(board.GetCell(0,0));
+        food = Instantiate(foodPrefab);
+        food.SetActive(false);
+        StartCoroutine(SpawnFood());
     }
 
     // Update is called once per frame
@@ -40,10 +50,35 @@ public class Game : MonoBehaviour
 
     private void Tick()
     {
+        MoveSnake();
+    }
+    private IEnumerator SpawnFood()
+    {
+        int _row = 0;
+        int _column = 0;
+        Cell cell;
+        while (true)
+        {
+            _row = Random.Range(0, ROWS);
+            _column = Random.Range(0, COLS);
+            cell = board.GetCell(_row, _column);
+            if (cell.Status == CellStatus.None)
+            {
+                break;
+            }
+            yield return null;
+        }
+        cell.Status = CellStatus.Food;
+        food.transform.position = cell.Pos;
+        food.SetActive(true);
+    }
+
+    private void MoveSnake()
+    {
         int row = snake.Head.Row;
         int col = snake.Head.Col;
 
-        switch(moveDirection)
+        switch (moveDirection)
         {
             case Direction.UP:
                 col++;
@@ -58,6 +93,6 @@ public class Game : MonoBehaviour
                 row++;
                 break;
         }
-        snake.Move(board.GetCell(row,col));
+        snake.Move(board.GetCell(row, col));
     }
 }

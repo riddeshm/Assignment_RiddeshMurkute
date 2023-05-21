@@ -4,6 +4,7 @@ public class Board
 {
     private int rows, cols;
     private Cell[,] cells;
+    
 
     public Board(int _rows, int _cols)
     {

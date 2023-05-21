@@ -4,7 +4,7 @@ public enum CellStatus
 {
     None,
     Snake,
-    Particle
+    Food
 }
 
 public class Cell
