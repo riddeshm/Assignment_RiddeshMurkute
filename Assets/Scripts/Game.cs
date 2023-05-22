@@ -24,10 +24,15 @@ public class Game : MonoBehaviour
     CancellationTokenSource cts = new();
     Food[] foodItems;
     Food currentFood;
+    Food previousFood;
+    int streak = 1;
+    int score = 0;
+    private bool gameOver = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        GameOver();
         board = new Board(ROWS, COLS);
         snake.Init(board.GetCell(0,0));
         InitializeFoodObjs();
@@ -51,6 +56,10 @@ public class Game : MonoBehaviour
 
     private void Tick()
     {
+        if(gameOver)
+        {
+            return;
+        }
         int row = snake.Head.Row;
         int col = snake.Head.Col;
         Cell cell;
@@ -71,10 +80,9 @@ public class Game : MonoBehaviour
                 row++;
                 break;
         }
-        Debug.Log(row);
         if(row >= ROWS || row < 0 || col >= COLS || col < 0)
         {
-            Debug.Log("GameOver");
+            GameOver();
             return;
         }
         cell = board.GetCell(row, col);
@@ -83,12 +91,25 @@ public class Game : MonoBehaviour
         if(cellStatus == CellStatus.Food)
         {
             currentFood.foodGameObj.SetActive(false);
+            if(previousFood != null)
+            {
+                if(previousFood == currentFood)
+                {
+                    streak++;
+                }
+                else
+                {
+                    streak = 1;
+                }
+            }
+            score += (currentFood.Points*streak);
+            previousFood = currentFood;
             snake.Expand();
             StartCoroutine(SpawnFood());
         }
         else if(cellStatus == CellStatus.Snake)
         {
-            Debug.Log("GameOver");
+            GameOver();
             return;
         }
         snake.Move(cell);
@@ -145,5 +166,20 @@ public class Game : MonoBehaviour
             foodItems[i].foodGameObj = Instantiate(foodObj);
             foodItems[i].foodGameObj.SetActive(false);
         }
+    }
+
+    private void GameOver()
+    {
+        gameOver = true;
+        int highScore = PlayerPrefs.GetInt("HighScore");
+        if(score > highScore)
+        {
+            PlayerPrefs.SetFloat("HighScore", score);
+        }
+    }
+
+    public void Restart()
+    {
+
     }
 }
