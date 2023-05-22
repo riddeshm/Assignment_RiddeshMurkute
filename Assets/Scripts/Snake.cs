@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
-    List<Cell> parts = new List<Cell>();
-    List<GameObject> partObjs = new List<GameObject>();
-    Cell head;
+    private List<Cell> parts = new List<Cell>();
+    private List<GameObject> partObjs = new List<GameObject>();
+    private Cell head;
 
     [SerializeField] private GameObject partPrefab;
 

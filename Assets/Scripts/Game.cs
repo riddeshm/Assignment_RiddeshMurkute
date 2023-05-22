@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 
@@ -16,20 +14,19 @@ public enum Direction
 public class Game : MonoBehaviour
 {
     private const int ROWS = 10, COLS = 10;
-    [SerializeField] Snake snake;
-    [SerializeField] FoodConfig foodConfig;
-    [SerializeField] GameObject gameOverPopup;
-    [SerializeField] TextMeshProUGUI scoreText;
-    Board board;
-    Direction moveDirection = Direction.RIGHT;
-    float interval = 0.5f;
-    float nextTime = 0;
-    CancellationTokenSource cts = new();
-    Food[] foodItems;
-    Food currentFood;
-    Food previousFood;
-    int streak = 1;
-    int score = 0;
+    [SerializeField] private Snake snake;
+    [SerializeField] private FoodConfig foodConfig;
+    [SerializeField] private GameObject gameOverPopup;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    private Board board;
+    private Direction moveDirection = Direction.RIGHT;
+    private float interval = 0.5f;
+    private float nextTime = 0;
+    private Food[] foodItems;
+    private Food currentFood;
+    private Food previousFood;
+    private int streak = 1;
+    private int score = 0;
     private bool gameOver = false;
 
     // Start is called before the first frame update
@@ -92,23 +89,7 @@ public class Game : MonoBehaviour
         
         if(cellStatus == CellStatus.Food)
         {
-            currentFood.foodGameObj.SetActive(false);
-            if(previousFood != null)
-            {
-                if(previousFood == currentFood)
-                {
-                    streak++;
-                }
-                else
-                {
-                    streak = 1;
-                }
-            }
-            score += (currentFood.Points*streak);
-            previousFood = currentFood;
-            snake.Expand();
-            StartCoroutine(SpawnFood());
-            scoreText.text = score.ToString();
+            EatFood();
         }
         else if(cellStatus == CellStatus.Snake)
         {
@@ -185,5 +166,31 @@ public class Game : MonoBehaviour
     public void Restart()
     {
 
+    }
+
+    private void EatFood()
+    {
+        currentFood.foodGameObj.SetActive(false);
+        CalculateScore();
+        previousFood = currentFood;
+        snake.Expand();
+        StartCoroutine(SpawnFood());
+        scoreText.text = score.ToString();
+    }
+
+    private void CalculateScore()
+    {
+        if (previousFood != null)
+        {
+            if (previousFood == currentFood)
+            {
+                streak++;
+            }
+            else
+            {
+                streak = 1;
+            }
+        }
+        score += (currentFood.Points * streak);
     }
 }
