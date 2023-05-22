@@ -16,21 +16,21 @@ public class Game : MonoBehaviour
 {
     private const int ROWS = 10, COLS = 10;
     [SerializeField] Snake snake;
-    [SerializeField] GameObject foodPrefab;
+    [SerializeField] FoodConfig foodConfig;
     Board board;
     Direction moveDirection = Direction.RIGHT;
     float interval = 0.5f;
     float nextTime = 0;
     CancellationTokenSource cts = new();
+    Food[] foodItems;
+    Food currentFood;
 
-    GameObject food;
     // Start is called before the first frame update
     void Start()
     {
         board = new Board(ROWS, COLS);
         snake.Init(board.GetCell(0,0));
-        food = Instantiate(foodPrefab);
-        food.SetActive(false);
+        InitializeFoodObjs();
         StartCoroutine(SpawnFood());
     }
 
@@ -71,7 +71,8 @@ public class Game : MonoBehaviour
                 row++;
                 break;
         }
-        if(row > ROWS || row < 0 || col > COLS || col < 0)
+        Debug.Log(row);
+        if(row >= ROWS || row < 0 || col >= COLS || col < 0)
         {
             Debug.Log("GameOver");
             return;
@@ -81,7 +82,7 @@ public class Game : MonoBehaviour
         
         if(cellStatus == CellStatus.Food)
         {
-            food.SetActive(false);
+            currentFood.foodGameObj.SetActive(false);
             snake.Expand();
             StartCoroutine(SpawnFood());
         }
@@ -130,7 +131,19 @@ public class Game : MonoBehaviour
             yield return null;
         }
         cell.Status = CellStatus.Food;
-        food.transform.position = cell.Pos;
-        food.SetActive(true);
+        currentFood = foodItems[Random.Range(0, foodItems.Length)];
+        currentFood.foodGameObj.transform.position = cell.Pos;
+        currentFood.foodGameObj.SetActive(true);
+    }
+
+    private void InitializeFoodObjs()
+    {
+        foodItems = foodConfig.FoodContainer.FoodItems;
+        for (int i = 0; i < foodItems.Length; i++)
+        {
+            GameObject foodObj = Resources.Load<GameObject>(foodItems[i].Color);
+            foodItems[i].foodGameObj = Instantiate(foodObj);
+            foodItems[i].foodGameObj.SetActive(false);
+        }
     }
 }

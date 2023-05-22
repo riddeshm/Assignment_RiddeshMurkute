@@ -1,0 +1,12 @@
+{
+    "FoodItems": [
+        {
+            "Color": "red",
+            "Points": 15
+        },
+        {
+            "Color": "blue",
+            "Points": "20"
+        }
+    ]
+}
