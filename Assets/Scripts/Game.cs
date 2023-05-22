@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using TMPro;
 
 public enum Direction
 {
@@ -17,6 +18,8 @@ public class Game : MonoBehaviour
     private const int ROWS = 10, COLS = 10;
     [SerializeField] Snake snake;
     [SerializeField] FoodConfig foodConfig;
+    [SerializeField] GameObject gameOverPopup;
+    [SerializeField] TextMeshProUGUI scoreText;
     Board board;
     Direction moveDirection = Direction.RIGHT;
     float interval = 0.5f;
@@ -32,7 +35,6 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameOver();
         board = new Board(ROWS, COLS);
         snake.Init(board.GetCell(0,0));
         InitializeFoodObjs();
@@ -106,6 +108,7 @@ public class Game : MonoBehaviour
             previousFood = currentFood;
             snake.Expand();
             StartCoroutine(SpawnFood());
+            scoreText.text = score.ToString();
         }
         else if(cellStatus == CellStatus.Snake)
         {
@@ -176,6 +179,7 @@ public class Game : MonoBehaviour
         {
             PlayerPrefs.SetFloat("HighScore", score);
         }
+        gameOverPopup.SetActive(true);
     }
 
     public void Restart()
