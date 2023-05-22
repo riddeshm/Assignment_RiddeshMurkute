@@ -42,12 +42,13 @@ public class Game : MonoBehaviour
     void Update()
     {
         CheckInput();
-        if (Time.time >= nextTime)
+        nextTime += Time.deltaTime;
+        if (nextTime >= interval)
         {
 
             //do something here every interval seconds
 
-            nextTime += interval;
+            nextTime = 0;
             Tick();
 
         }
@@ -156,16 +157,17 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
         int highScore = PlayerPrefs.GetInt("HighScore");
+        Debug.Log("Score " + score + " HighSCore" + highScore);
         if(score > highScore)
         {
-            PlayerPrefs.SetFloat("HighScore", score);
+            PlayerPrefs.SetInt("HighScore", score);
         }
         gameOverPopup.SetActive(true);
     }
 
     public void Restart()
     {
-
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
     private void EatFood()
