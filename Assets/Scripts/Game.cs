@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
     private bool gameOver = false;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         board = new Board(ROWS, COLS);
         snake.Init(board.GetCell(0,0));
@@ -38,8 +38,7 @@ public class Game : MonoBehaviour
         StartCoroutine(SpawnFood());
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         CheckInput();
         nextTime += Time.deltaTime;
@@ -157,7 +156,6 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
         int highScore = PlayerPrefs.GetInt("HighScore");
-        Debug.Log("Score " + score + " HighSCore" + highScore);
         if(score > highScore)
         {
             PlayerPrefs.SetInt("HighScore", score);
